@@ -28,7 +28,7 @@
           <!--iterates through classes object-->
         {% for class in mbClasses %}
             
-                <tr class="program_colour">
+                <tr class={{ class.program_code }}>
                   <td>{{ class.name }} </td> 
                   <td>{{ class.subject_group }} </td>  
                   <td>{{ class.program_code }} </td>
