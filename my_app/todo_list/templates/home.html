@@ -20,6 +20,7 @@
         <tr>
             
             <th scope="col">Class</th>
+            <th scope="col">Subject group</th>
             <th scope="col">Program</th>
           </tr>
         </thead>
@@ -27,8 +28,9 @@
           <!--iterates through classes object-->
         {% for class in mbClasses %}
             
-                <tr>
-                  <td>{{ class.name }} </td>  
+                <tr class="program_colour">
+                  <td>{{ class.name }} </td> 
+                  <td>{{ class.subject_group }} </td>  
                   <td>{{ class.program_code }} </td>
                 </tr>
         {% endfor %}

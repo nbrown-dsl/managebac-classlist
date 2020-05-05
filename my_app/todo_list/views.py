@@ -33,7 +33,7 @@ def search(request):
 
         for classes in mbClasses['classes']:
             if filterTerm in classes['name']:
-                filteredList.append({'name':classes['name'], 'program_code':classes['program_code']})
+                filteredList.append({'name':classes['name'], 'program_code':classes['program_code'], 'subject_group':classes['subject_group']})
 
         messages.success(request,('Classes containing '+filterTerm))
         return render(request,'home.html',{'mbClasses' : filteredList})
