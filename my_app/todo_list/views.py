@@ -6,6 +6,13 @@ from django.http import HttpResponseRedirect
 
 # Create your views here.
 def home(request):
+    import json
+    import requests
+    #managebac API call test
+    headers = {
+    'auth-token': '62170e73818bebc4e88a7f60e2f86d81a93d064ceec190a5795dc9a79c550841',}
+    response = requests.get('https://api.managebac.com/v2/classes', headers=headers)
+    mbClasses = json.loads(response.content)
 
     if request.method == 'POST':
         form = ListForm(request.POST or None)
