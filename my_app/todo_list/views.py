@@ -4,19 +4,27 @@ from .forms import ListForm
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 
+
+
 # Create your views here.
 def home(request):
-    import json
-    import requests
-    #managebac API call test
-    headers = {
-    'auth-token': '62170e73818bebc4e88a7f60e2f86d81a93d064ceec190a5795dc9a79c550841',}
-    response = requests.get('https://api.managebac.com/v2/classes', headers=headers)
+    # import json
+    # import requests
+    # #managebac API call test
+    # headers = {
+    # 'auth-token': '62170e73818bebc4e88a7f60e2f86d81a93d064ceec190a5795dc9a79c550841',}
+    # response = requests.get('https://api.managebac.com/v2/classes', headers=headers)
     
-    global mbClasses
-    mbClasses = json.loads(response.content)
+    # global mbClasses
+    # mbClasses = json.loads(response.content)
 
-    return render(request,'home.html',{'mbClasses' : mbClasses['classes']})
+    # return render(request,'home.html',{'mbClasses' : mbClasses['classes']})
+
+    from .classroomList import main
+    global courses
+    courses = main()
+
+    return render(request,'home.html',{'mbClasses' : courses})
 
 
 def about(request):
@@ -31,17 +39,17 @@ def search(request):
         filterTerm = request.POST['item']
         filteredList = []
 
-        for classes in mbClasses['classes']:
+        for classes in courses:
             if filterTerm in classes['name']:
-                filteredList.append({'name':classes['name'], 'program_code':classes['program_code'], 'subject_group':classes['subject_group']})
+                filteredList.append({'name':classes['name'], 'teacherGroupEmail':classes['teacherGroupEmail'], 'enrollmentCode':classes['enrollmentCode']})
 
-        messages.success(request,('Classes containing '+filterTerm))
+        messages.success(request,('Courses containing '+filterTerm))
         return render(request,'home.html',{'mbClasses' : filteredList})
 
     else:
 
         
-        return render(request,'home.html',{'mbClasses' : mbClasses['classes']})
+        return render(request,'home.html',{'mbClasses' : courses})
 
 #sort items alphabetically
 def sortAlpha(request):

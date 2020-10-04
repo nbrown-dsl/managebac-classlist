@@ -20,8 +20,8 @@
         <tr>
             
             <th scope="col">Class</th>
-            <th scope="col">Subject group</th>
-            <th scope="col">Program</th>
+            <th scope="col">Enrollment code</th>
+            <th scope="col">class email</th>
           </tr>
         </thead>
           <tbody>
@@ -30,8 +30,8 @@
             
                 <tr class={{ class.program_code }}>
                   <td>{{ class.name }} </td> 
-                  <td>{{ class.subject_group }} </td>  
-                  <td>{{ class.program_code }} </td>
+                  <td>{{ class.enrollmentCode }} </td>  
+                  <td>{{ class.teacherGroupEmail }} </td>
                 </tr>
         {% endfor %}
    
