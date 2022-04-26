@@ -1,2 +1,2 @@
 # file holding API key
-*.txt
+*key
