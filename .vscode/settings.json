@@ -1,7 +1,8 @@
 {
-    "python.pythonPath": "C:\\Users\\Mr Brown\\AppData\\Local\\Programs\\Python\\Python38-32\\python.exe",
+    "python.pythonPath": ".venv\\Scripts\\python.exe",
     "json.schemas": [
 
     
-    ]
+    ],
+    "git.ignoreLimitWarning": true
 }
