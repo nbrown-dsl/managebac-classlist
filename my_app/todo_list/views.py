@@ -5,20 +5,19 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect
 from .key import keyToken
 
-
+import json
+import requests
+    #managebac API call test
+headers = {
+    'auth-token': keyToken(),}
+response = requests.get('https://api.managebac.com/v2/classes', headers=headers)
+    
+global mbClasses
+# converts to python dict
+mbClasses = json.loads(response.content)
 
 def home(request):
     
-    import json
-    import requests
-    #managebac API call test
-    headers = {
-    'auth-token': keyToken(),}
-    response = requests.get('https://api.managebac.com/v2/classes', headers=headers)
-    
-    global mbClasses
-    mbClasses = json.loads(response.content)
-
     return render(request,'home.html',{'mbClasses' : mbClasses['classes']})
 
     from .classroomList import main
@@ -36,7 +35,7 @@ def about(request):
 
 def search(request):
     
-    if request.method == 'POST' and request.POST['item']:
+    if request.method == 'POST' and len(request.POST['item'])>0:
         filterTerm = request.POST['item']
         filteredList = []
 
@@ -46,11 +45,9 @@ def search(request):
 
         messages.success(request,('Courses containing '+filterTerm))
         return render(request,'home.html',{'mbClasses' : filteredList})
+    
+    return render(request,'home.html',{'mbClasses' : mbClasses['classes']})
 
-    else:
-
-        
-        return render(request,'home.html',{'mbClasses' : mbClasses})
 
 #sort items alphabetically
 def sortAlpha(request):
