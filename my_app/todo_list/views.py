@@ -99,7 +99,7 @@ def student(request):
                     for student in classGrades["students"]:
                         if student['id'] == int(id):
                             transcriptData.append({'name':classes['name'],'grade':student['term_grade']['grade']})
-                terms.append({'termID':term['id'], 'termName':term['name'], 'classGrades':transcriptData})
+                    terms.append({'termID':term['id'], 'termName':term['name'], 'classGrades':transcriptData})
             years.append({'yearName':year["name"],'terms':terms})
         messages.success(request,('Student Classes'))
         return render(request,'student.html',{'years' : years})
