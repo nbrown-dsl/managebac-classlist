@@ -89,20 +89,20 @@ def student(request):
         transcriptData = []
         student_Classes = studentClasses(id)["memberships"]["classes"]
         # termID = 168734
-        years = academicYears()["academic_years"]["diploma"]["academic_years"]
+        yearsData = academicYears()["academic_years"]["diploma"]["academic_years"]
         
         
-        for year in years:
+        for year in yearsData:
             for term in year["academic_terms"]:
                 for classes in student_Classes:
                     classGrades = classTermGrades(str(classes['id']),str(term['id']))
                     for student in classGrades["students"]:
                         if student['id'] == int(id):
                             transcriptData.append({'name':classes['name'],'grade':student['term_grade']['grade']})
-            terms.append({'termID':term['id'], 'termName':term['name'], 'classGrades':transcriptData})
-
+                terms.append({'termID':term['id'], 'termName':term['name'], 'classGrades':transcriptData})
+            years.append({'yearName':year["name"],'terms':terms})
         messages.success(request,('Student Classes'))
-        return render(request,'student.html',{'mbClasses' : terms})
+        return render(request,'student.html',{'years' : years})
     
     return render(request,'student.html')
 

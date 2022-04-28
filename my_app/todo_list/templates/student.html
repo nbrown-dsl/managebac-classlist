@@ -16,7 +16,7 @@
 {% endif %}
 {{ name }}
 
-
+eg 13618268
 <form class="form-inline my-2 my-lg-0" method="POST" action="{% url 'student' %}">
   {% csrf_token %}
 <input class="form-control mr-sm-2" type="add" placeholder="id" aria-label="student id" name="studentID" >
@@ -24,7 +24,9 @@
 <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Run</button>
 </form>
 <br>
-{% for term in mbClasses %}
+{% for year in years %}
+<h1>Year:{{ year.yearName }}</h1>
+{% for term in year.terms %}
 <h2>Term:{{ term.termName }}</h2>
     <table class="table table-dark">
         <thead class="thead-dark">
@@ -50,7 +52,8 @@
             </tbody>
     </table>
   {% endfor %}
+  {% endfor %}
  <br>
- {{ mbClasses }}   
+ {{ years }}   
 {% endblock %}
 
