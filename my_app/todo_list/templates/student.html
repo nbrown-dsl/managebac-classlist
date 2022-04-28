@@ -23,7 +23,9 @@
 <input type="hidden" name="type" value="studentID">
 <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Run</button>
 </form>
-
+<br>
+{% for term in mbClasses %}
+<h2>Term:{{ term.termName }}</h2>
     <table class="table table-dark">
         <thead class="thead-dark">
         <tr>
@@ -34,10 +36,11 @@
           </tr>
         </thead>
           <tbody>
-          <!--iterates through classes object-->
-        {% for class in mbClasses %}
+
+          <!--iterates through classGrades object-->
+        {% for class in term.classGrades %}
             
-                <tr class={{ class.program_code }}>
+                <tr>
                   <td>{{ class.name }} </td> 
                   <td>{{ class.grade }} </td>  
                   <td>{{ class.teacherGroupEmail }} </td>
@@ -46,6 +49,7 @@
    
             </tbody>
     </table>
+  {% endfor %}
  <br>
  {{ mbClasses }}   
 {% endblock %}

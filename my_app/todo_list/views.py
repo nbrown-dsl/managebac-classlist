@@ -16,6 +16,15 @@ global mbClasses
 # converts to python dict
 mbClasses = json.loads(response.content)
 
+
+def academicYears():
+    headers = {
+    'auth-token': keyToken(),}
+    response = requests.get('https://api.managebac.com/v2/school/academic-years', headers=headers)
+
+    return json.loads(response.content)
+
+
 def studentClasses(id):
     headers = {
     'auth-token': keyToken(),}
@@ -75,20 +84,27 @@ def student(request):
     
     if request.method == 'POST':
         id = request.POST['studentID']
-        filteredList = []
+        years = []
+        terms = []
+        transcriptData = []
         student_Classes = studentClasses(id)["memberships"]["classes"]
-        termID = 168734
-
-        for classes in student_Classes:
-            classGrades = classTermGrades(str(classes['id']),str(termID))
-            for student in classGrades["students"]:
-                if student['id'] == int(id):
-                    filteredList.append({'name':classes['name'],'grade':student['term_grade']['grade']})
+        # termID = 168734
+        years = academicYears()["academic_years"]["diploma"]["academic_years"]
+        
+        
+        for year in years:
+            for term in year["academic_terms"]:
+                for classes in student_Classes:
+                    classGrades = classTermGrades(str(classes['id']),str(term['id']))
+                    for student in classGrades["students"]:
+                        if student['id'] == int(id):
+                            transcriptData.append({'name':classes['name'],'grade':student['term_grade']['grade']})
+            terms.append({'termID':term['id'], 'termName':term['name'], 'classGrades':transcriptData})
 
         messages.success(request,('Student Classes'))
-        return render(request,'student.html',{'mbClasses' : filteredList})
+        return render(request,'student.html',{'mbClasses' : terms})
     
-    return render(request,'student.html',{'mbClasses' : mbClasses['classes']})
+    return render(request,'student.html')
 
 
 #sort items alphabetically
