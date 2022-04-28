@@ -16,6 +16,21 @@ global mbClasses
 # converts to python dict
 mbClasses = json.loads(response.content)
 
+def studentClasses(id):
+    headers = {
+    'auth-token': keyToken(),}
+    response = requests.get('https://api.managebac.com/v2/students/'+id+'/memberships', headers=headers)
+
+    return json.loads(response.content)
+
+def classTermGrades(classId,termId):
+    headers = {
+    'auth-token': keyToken(),}
+    response = requests.get('https://api.managebac.com/v2/classes/'+classId+'/assessments/term/'+termId+'/term-grades?include_archived_students=true', headers=headers)
+
+    return json.loads(response.content)
+
+
 def home(request):
     
     return render(request,'home.html',{'mbClasses' : mbClasses['classes']})
@@ -47,6 +62,24 @@ def search(request):
         return render(request,'home.html',{'mbClasses' : filteredList})
     
     return render(request,'home.html',{'mbClasses' : mbClasses['classes']})
+
+def student(request):
+    
+    if request.method == 'POST':
+        id = request.POST['studentID']
+        filteredList = []
+        student_Classes = studentClasses(id)["memberships"]["classes"]
+
+        for classes in student_Classes:
+            classGrades = classTermGrades(str(classes['id']),str(168734))
+            for student in classGrades["students"]:
+                if student['id'] == int(id):
+                    filteredList.append({'name':classes['name'],'grade':student['term_grade']['grade']})
+
+        messages.success(request,('Student Classes'))
+        return render(request,'student.html',{'mbClasses' : filteredList})
+    
+    return render(request,'student.html',{'mbClasses' : mbClasses['classes']})
 
 
 #sort items alphabetically
