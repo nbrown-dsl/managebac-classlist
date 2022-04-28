@@ -23,6 +23,14 @@ def studentClasses(id):
 
     return json.loads(response.content)
 
+def allClasses():
+    headers = {
+    'auth-token': keyToken(),}
+    response = requests.get('https://api.managebac.com/v2/classes', headers=headers)
+
+    return json.loads(response.content)
+    
+
 def classTermGrades(classId,termId):
     headers = {
     'auth-token': keyToken(),}
@@ -69,9 +77,10 @@ def student(request):
         id = request.POST['studentID']
         filteredList = []
         student_Classes = studentClasses(id)["memberships"]["classes"]
+        termID = 168734
 
         for classes in student_Classes:
-            classGrades = classTermGrades(str(classes['id']),str(168734))
+            classGrades = classTermGrades(str(classes['id']),str(termID))
             for student in classGrades["students"]:
                 if student['id'] == int(id):
                     filteredList.append({'name':classes['name'],'grade':student['term_grade']['grade']})
