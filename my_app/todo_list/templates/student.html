@@ -24,7 +24,9 @@ eg 13618268
 <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Run</button>
 </form>
 <br>
-{% for year in years %}
+{% for programme in years %}
+<h1>programme</h1>
+{% for year in programme %}
 <h1>Year:{{ year.yearName }}</h1>
 {% for term in year.terms %}
 <h2>Term:{{ term.termName }}</h2>
@@ -51,6 +53,7 @@ eg 13618268
    
             </tbody>
     </table>
+  {% endfor %}
   {% endfor %}
   {% endfor %}
  <br>

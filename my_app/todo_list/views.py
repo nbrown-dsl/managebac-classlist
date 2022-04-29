@@ -84,14 +84,15 @@ def student(request):
     
     if request.method == 'POST':
         id = request.POST['studentID']
-        years = []
+        mypyears = []
+        dpyears = []
         
         student_Classes = studentClasses(id)["memberships"]["classes"]
         # termID = 168734
-        yearsData = academicYears()["academic_years"]["myp"]["academic_years"]
-        
-        
-        for year in yearsData:
+        mypyearsData = academicYears()["academic_years"]["myp"]["academic_years"]
+        dpyearsData = academicYears()["academic_years"]["diploma"]["academic_years"]
+
+        for year in mypyearsData:
             hasyearGrades = False
             terms = []
             for term in year["academic_terms"]:               
@@ -107,7 +108,28 @@ def student(request):
                     terms.append({'termID':term['id'], 'termName':term['name'], 'classGrades':transcriptData})
                     hasyearGrades = True
             if hasyearGrades:
-                years.append({'yearName':year["name"],'terms':terms})
+                mypyears.append({'yearName':year["name"],'terms':terms})
+        
+        for year in dpyearsData:
+            hasyearGrades = False
+            terms = []
+            for term in year["academic_terms"]:               
+                transcriptData = []
+                hasGrade = False
+                for classes in student_Classes:
+                    classGrades = classTermGrades(str(classes['id']),str(term['id']))
+                    for student in classGrades["students"]:
+                        if student['id'] == int(id) and student['term_grade']['grade']!=None:
+                            hasGrade = True
+                            transcriptData.append({'name':classes['name'],'grade':student['term_grade']['grade']})
+                if hasGrade:
+                    terms.append({'termID':term['id'], 'termName':term['name'], 'classGrades':transcriptData})
+                    hasyearGrades = True
+            if hasyearGrades:
+                dpyears.append({'yearName':year["name"],'terms':terms})
+
+        years = {"mypyears": mypyears, "dpyears": dpyears}    
+        
         messages.success(request,('Student Classes'))
         return render(request,'student.html',{'years' : years})
     
