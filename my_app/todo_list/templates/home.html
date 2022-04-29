@@ -20,18 +20,18 @@
         <tr>
             
             <th scope="col">Class</th>
-            <th scope="col">Enrollment code</th>
-            <th scope="col">class email</th>
+            <th scope="col">Subject</th>
+            <th scope="col">Group</th>
           </tr>
         </thead>
           <tbody>
           <!--iterates through classes object-->
         {% for class in mbClasses %}
             
-                <tr class={{ class.program_code }}>
+                <tr >
                   <td>{{ class.name }} </td> 
-                  <td>{{ class.enrollmentCode }} </td>  
-                  <td>{{ class.teacherGroupEmail }} </td>
+                  <td>{{ class.subject_name }} </td>  
+                  <td>{{ class.subject_group }} </td>
                 </tr>
         {% endfor %}
    

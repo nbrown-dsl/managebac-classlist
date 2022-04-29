@@ -8,13 +8,13 @@ from .key import keyToken
 import json
 import requests
     #managebac API call test
-headers = {
-    'auth-token': keyToken(),}
-response = requests.get('https://api.managebac.com/v2/classes', headers=headers)
+def mbClasses():
+    headers = {
+        'auth-token': keyToken(),}
+    response = requests.get('https://api.managebac.com/v2/classes?archived=true', headers=headers)
     
-global mbClasses
-# converts to python dict
-mbClasses = json.loads(response.content)
+    # converts to python dict
+    return json.loads(response.content)
 
 
 def academicYears():
@@ -28,14 +28,14 @@ def academicYears():
 def studentClasses(id):
     headers = {
     'auth-token': keyToken(),}
-    response = requests.get('https://api.managebac.com/v2/students/'+id+'/memberships', headers=headers)
+    response = requests.get('https://api.managebac.com/v2/students/'+id+'/memberships?archived=true', headers=headers)
 
     return json.loads(response.content)
 
 def allClasses():
     headers = {
     'auth-token': keyToken(),}
-    response = requests.get('https://api.managebac.com/v2/classes', headers=headers)
+    response = requests.get('https://api.managebac.com/v2/classes?archived=true', headers=headers)
 
     return json.loads(response.content)
     
@@ -50,7 +50,7 @@ def classTermGrades(classId,termId):
 
 def home(request):
     
-    return render(request,'home.html',{'mbClasses' : mbClasses['classes']})
+    return render(request,'home.html',{'mbClasses' : mbClasses()['classes']})
 
     from .classroomList import main
     global courses
@@ -71,14 +71,14 @@ def search(request):
         filterTerm = request.POST['item']
         filteredList = []
 
-        for classes in mbClasses["classes"]:
+        for classes in mbClasses()["classes"]:
             if filterTerm in classes['name']:
                 filteredList.append({'name':classes['name']})
 
         messages.success(request,('Courses containing '+filterTerm))
-        return render(request,'home.html',{'mbClasses' : filteredList})
+        return render(request,'home.html',{'mbClasses()' : filteredList})
     
-    return render(request,'home.html',{'mbClasses' : mbClasses['classes']})
+    return render(request,'home.html',{'mbClasses' : mbClasses()['classes']})
 
 def student(request):
     
@@ -88,7 +88,7 @@ def student(request):
         
         student_Classes = studentClasses(id)["memberships"]["classes"]
         # termID = 168734
-        yearsData = academicYears()["academic_years"]["diploma"]["academic_years"]
+        yearsData = academicYears()["academic_years"]["myp"]["academic_years"]
         
         
         for year in yearsData:
