@@ -25,36 +25,36 @@ eg 13618268
 </form>
 <br>
 {% for programme in years %}
-<h1>programme</h1>
-{% for year in programme %}
-<h1>Year:{{ year.yearName }}</h1>
-{% for term in year.terms %}
-<h2>Term:{{ term.termName }}</h2>
-    <table class="table table-dark">
-        <thead class="thead-dark">
-        <tr>
-            
-            <th scope="col">Class</th>
-            <th scope="col">Grade</th>
-            <th scope="col">class email</th>
-          </tr>
-        </thead>
-          <tbody>
+<h1>Programme</h1>
+  {% for year in programme %}
+  <h1>Year:{{ year.yearName }}</h1>
+    {% for term in year.terms %}
+    <h2>Term:{{ term.termName }}</h2>
+        <table class="table table-dark">
+            <thead class="thead-dark">
+            <tr>
+                
+                <th scope="col">Class</th>
+                <th scope="col">Grade</th>
+                <th scope="col">class email</th>
+              </tr>
+            </thead>
+              <tbody>
 
-          <!--iterates through classGrades object-->
-        {% for class in term.classGrades %}
-            
-                <tr>
-                  <td>{{ class.name }} </td> 
-                  <td>{{ class.grade }} </td>  
-                  <td>{{ class.teacherGroupEmail }} </td>
-                </tr>
-        {% endfor %}
-   
-            </tbody>
-    </table>
-  {% endfor %}
-  {% endfor %}
+              <!--iterates through classGrades object-->
+            {% for class in term.classGrades %}
+                
+                    <tr>
+                      <td>{{ class.name }} </td> 
+                      <td>{{ class.grade }} </td>  
+                      <td>{{ class.teacherGroupEmail }} </td>
+                    </tr>
+            {% endfor %}
+      
+                </tbody>
+        </table>
+      {% endfor %}
+    {% endfor %}
   {% endfor %}
  <br>
  {{ years }}   

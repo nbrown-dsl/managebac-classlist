@@ -25,10 +25,12 @@ def academicYears():
     return json.loads(response.content)
 
 
-def studentClasses(id):
+def studentClasses(id,archived):
+    if not archived:
+        archived = 'false'
     headers = {
     'auth-token': keyToken(),}
-    response = requests.get('https://api.managebac.com/v2/students/'+id+'/memberships?archived=true', headers=headers)
+    response = requests.get('https://api.managebac.com/v2/students/'+id+'/memberships?archived='+archived, headers=headers)
 
     return json.loads(response.content)
 
@@ -87,7 +89,8 @@ def student(request):
         mypyears = []
         dpyears = []
         
-        student_Classes = studentClasses(id)["memberships"]["classes"]
+        archived_student_Classes = studentClasses(id,'true')["memberships"]["classes"]
+        current_student_Classes = studentClasses(id,'false')["memberships"]["classes"]
         # termID = 168734
         mypyearsData = academicYears()["academic_years"]["myp"]["academic_years"]
         dpyearsData = academicYears()["academic_years"]["diploma"]["academic_years"]
@@ -98,7 +101,7 @@ def student(request):
             for term in year["academic_terms"]:               
                 transcriptData = []
                 hasGrade = False
-                for classes in student_Classes:
+                for classes in archived_student_Classes:
                     classGrades = classTermGrades(str(classes['id']),str(term['id']))
                     for student in classGrades["students"]:
                         if student['id'] == int(id) and student['term_grade']['grade']!=None:
@@ -116,7 +119,7 @@ def student(request):
             for term in year["academic_terms"]:               
                 transcriptData = []
                 hasGrade = False
-                for classes in student_Classes:
+                for classes in current_student_Classes:
                     classGrades = classTermGrades(str(classes['id']),str(term['id']))
                     for student in classGrades["students"]:
                         if student['id'] == int(id) and student['term_grade']['grade']!=None:
@@ -128,7 +131,7 @@ def student(request):
             if hasyearGrades:
                 dpyears.append({'yearName':year["name"],'terms':terms})
 
-        years = {"mypyears": mypyears, "dpyears": dpyears}    
+        years = [mypyears, dpyears]    
         
         messages.success(request,('Student Classes'))
         return render(request,'student.html',{'years' : years})
