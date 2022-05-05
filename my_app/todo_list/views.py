@@ -97,8 +97,8 @@ def student(request):
         mypyears = []
         dpyears = []
 
-        studentObject = studentData(id)
-        studentStart = studentObject["student"]["created_at"]
+        studentObject = studentData(id)["student"]
+        studentStart = studentObject["created_at"]
         
         archived_student_Classes = studentClasses(id,'true')["memberships"]["classes"]
         current_student_Classes = studentClasses(id,'false')["memberships"]["classes"]
@@ -148,7 +148,7 @@ def student(request):
         years = [mypyears, dpyears]    
         
         messages.success(request,('Student Classes'))
-        return render(request,'student.html',{'years' : years})
+        return render(request,'student.html',{'years' : years,'student': studentObject})
     
     return render(request,'student.html')
 

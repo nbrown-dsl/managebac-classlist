@@ -24,6 +24,12 @@ eg 13618268
 <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Run</button>
 </form>
 <br>
+<h2>{{ student.first_name }}&nbsp;{{ student.last_name }}</h2><br>
+<h3>Graduating year {{ student.graduating_year }}</h3><br>
+{% if student.status == "withdrawn" %}
+Withdrawn on {{ student.withdrawn_on }}
+{% endif %}
+
 {% for programme in years %}
 <h1>Programme</h1>
   {% for year in programme %}
