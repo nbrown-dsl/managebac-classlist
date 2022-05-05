@@ -7,7 +7,15 @@ from .key import keyToken
 
 import json
 import requests
-    #managebac API call test
+
+def studentData(id):
+    headers = {
+        'auth-token': keyToken(),}
+    response = requests.get('https://api.managebac.com/v2/students/'+id, headers=headers)
+    
+    # converts to python dict
+    return json.loads(response.content)
+
 def mbClasses():
     headers = {
         'auth-token': keyToken(),}
@@ -88,6 +96,9 @@ def student(request):
         id = request.POST['studentID']
         mypyears = []
         dpyears = []
+
+        studentObject = studentData(id)
+        studentStart = studentObject["student"]["created_at"]
         
         archived_student_Classes = studentClasses(id,'true')["memberships"]["classes"]
         current_student_Classes = studentClasses(id,'false')["memberships"]["classes"]
@@ -98,38 +109,41 @@ def student(request):
         for year in mypyearsData:
             hasyearGrades = False
             terms = []
-            for term in year["academic_terms"]:               
-                transcriptData = []
-                hasGrade = False
-                for classes in archived_student_Classes:
-                    classGrades = classTermGrades(str(classes['id']),str(term['id']))
-                    for student in classGrades["students"]:
-                        if student['id'] == int(id) and student['term_grade']['grade']!=None:
-                            hasGrade = True
-                            transcriptData.append({'name':classes['name'],'grade':student['term_grade']['grade']})
-                if hasGrade:
-                    terms.append({'termID':term['id'], 'termName':term['name'], 'classGrades':transcriptData})
-                    hasyearGrades = True
-            if hasyearGrades:
-                mypyears.append({'yearName':year["name"],'terms':terms})
+            if int(year["starts_on"][0:4]) >= int(studentStart[0:4]):
+                for term in year["academic_terms"]:               
+                    transcriptData = []
+                    hasGrade = False
+                    for classes in archived_student_Classes:
+                        classGrades = classTermGrades(str(classes['id']),str(term['id']))
+                        for student in classGrades["students"]:
+                            if student['id'] == int(id) and student['term_grade']['grade']!=None:
+                                hasGrade = True
+                                transcriptData.append({'name':classes['name'],'grade':student['term_grade']['grade']})
+                    if hasGrade:
+                        terms.append({'termID':term['id'], 'termName':term['name'], 'classGrades':transcriptData})
+                        hasyearGrades = True
+                if hasyearGrades:
+                    mypyears.append({'yearName':year["name"],'terms':terms})
         
         for year in dpyearsData:
             hasyearGrades = False
             terms = []
-            for term in year["academic_terms"]:               
-                transcriptData = []
-                hasGrade = False
-                for classes in current_student_Classes:
-                    classGrades = classTermGrades(str(classes['id']),str(term['id']))
-                    for student in classGrades["students"]:
-                        if student['id'] == int(id) and student['term_grade']['grade']!=None:
-                            hasGrade = True
-                            transcriptData.append({'name':classes['name'],'grade':student['term_grade']['grade']})
-                if hasGrade:
-                    terms.append({'termID':term['id'], 'termName':term['name'], 'classGrades':transcriptData})
-                    hasyearGrades = True
-            if hasyearGrades:
-                dpyears.append({'yearName':year["name"],'terms':terms})
+            #only checks in years since student joined
+            if int(year["starts_on"][0:4]) >= int(studentStart[0:4]):
+                for term in year["academic_terms"]:               
+                    transcriptData = []
+                    hasGrade = False
+                    for classes in current_student_Classes:
+                        classGrades = classTermGrades(str(classes['id']),str(term['id']))
+                        for student in classGrades["students"]:
+                            if student['id'] == int(id) and student['term_grade']['grade']!=None:
+                                hasGrade = True
+                                transcriptData.append({'name':classes['name'],'grade':student['term_grade']['grade']})
+                    if hasGrade:
+                        terms.append({'termID':term['id'], 'termName':term['name'], 'classGrades':transcriptData})
+                        hasyearGrades = True
+                if hasyearGrades:
+                    dpyears.append({'yearName':year["name"],'terms':terms})
 
         years = [mypyears, dpyears]    
         
