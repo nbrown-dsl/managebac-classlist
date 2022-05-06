@@ -40,9 +40,10 @@ Withdrawn on {{ student.withdrawn_on }}
             <thead class="thead-dark">
             <tr>
                 
-                <th scope="col">Class</th>
-                <th scope="col">Grade</th>
-                <th scope="col">class email</th>
+                <th scope="col">Subject</th>
+                 <th scope="col">Subject group</th>
+                 <th scope="col">Grade</th>
+               
               </tr>
             </thead>
               <tbody>
@@ -51,9 +52,10 @@ Withdrawn on {{ student.withdrawn_on }}
             {% for class in term.classGrades %}
                 
                     <tr>
-                      <td>{{ class.name }} </td> 
+                      <td>{{ class.classData.subject_name }} </td> 
+                      <td>{{ class.classData.subject_group }} </td>
                       <td>{{ class.grade }} </td>  
-                      <td>{{ class.teacherGroupEmail }} </td>
+                      
                     </tr>
             {% endfor %}
       

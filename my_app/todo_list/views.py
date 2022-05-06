@@ -1,8 +1,6 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from .models import List
-from .forms import ListForm
 from django.contrib import messages
-from django.http import HttpResponseRedirect
 from .key import keyToken
 
 import json
@@ -42,10 +40,10 @@ def studentClasses(id,archived):
 
     return json.loads(response.content)
 
-def allClasses():
+def allClasses(archived):
     headers = {
     'auth-token': keyToken(),}
-    response = requests.get('https://api.managebac.com/v2/classes?archived=true', headers=headers)
+    response = requests.get('https://api.managebac.com/v2/classes?archived='+archived, headers=headers)
 
     return json.loads(response.content)
     
@@ -96,12 +94,17 @@ def student(request):
         id = request.POST['studentID']
         mypyears = []
         dpyears = []
+        #returns array of class objects
+        all_archived_Classes=allClasses('true')["classes"]
+        all_active_Classes=allClasses('false')["classes"]
+        all_Classes=all_archived_Classes+all_active_Classes
 
         studentObject = studentData(id)["student"]
         studentStart = studentObject["created_at"]
         
         archived_student_Classes = studentClasses(id,'true')["memberships"]["classes"]
         current_student_Classes = studentClasses(id,'false')["memberships"]["classes"]
+        all_student_classes=archived_student_Classes+current_student_Classes
         # termID = 168734
         mypyearsData = academicYears()["academic_years"]["myp"]["academic_years"]
         dpyearsData = academicYears()["academic_years"]["diploma"]["academic_years"]
@@ -113,12 +116,18 @@ def student(request):
                 for term in year["academic_terms"]:               
                     transcriptData = []
                     hasGrade = False
-                    for classes in archived_student_Classes:
+                    for classes in all_archived_Classes:
                         classGrades = classTermGrades(str(classes['id']),str(term['id']))
-                        for student in classGrades["students"]:
-                            if student['id'] == int(id) and student['term_grade']['grade']!=None:
-                                hasGrade = True
-                                transcriptData.append({'name':classes['name'],'grade':student['term_grade']['grade']})
+                        try:
+                            for student in classGrades["students"]:
+                                if student['id'] == int(id) and student['term_grade']['grade']!=None:
+                                    hasGrade = True
+                                    i=0
+                                    while classes['id'] != all_Classes[i]['id'] and i+1<len(all_Classes):
+                                        i=i+1
+                                    transcriptData.append({'classData':all_Classes[i],'grade':student['term_grade']['grade']})
+                        except:
+                            print("oops")
                     if hasGrade:
                         terms.append({'termID':term['id'], 'termName':term['name'], 'classGrades':transcriptData})
                         hasyearGrades = True
@@ -133,12 +142,18 @@ def student(request):
                 for term in year["academic_terms"]:               
                     transcriptData = []
                     hasGrade = False
-                    for classes in current_student_Classes:
+                    for classes in all_student_classes:
                         classGrades = classTermGrades(str(classes['id']),str(term['id']))
-                        for student in classGrades["students"]:
-                            if student['id'] == int(id) and student['term_grade']['grade']!=None:
-                                hasGrade = True
-                                transcriptData.append({'name':classes['name'],'grade':student['term_grade']['grade']})
+                        try:
+                            for student in classGrades["students"]:
+                                if student['id'] == int(id) and student['term_grade']['grade']!=None:
+                                    hasGrade = True
+                                    i=0
+                                    while classes['id'] != all_Classes[i]['id']:
+                                        i=i+1
+                                    transcriptData.append({'classData':all_Classes[i],'grade':student['term_grade']['grade']})
+                        except:
+                            print("oops")
                     if hasGrade:
                         terms.append({'termID':term['id'], 'termName':term['name'], 'classGrades':transcriptData})
                         hasyearGrades = True
