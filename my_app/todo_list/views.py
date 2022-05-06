@@ -116,7 +116,7 @@ def student(request):
                 for term in year["academic_terms"]:               
                     transcriptData = []
                     hasGrade = False
-                    for classes in all_archived_Classes:
+                    for classes in all_student_classes:
                         classGrades = classTermGrades(str(classes['id']),str(term['id']))
                         try:
                             for student in classGrades["students"]:
