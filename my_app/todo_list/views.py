@@ -5,55 +5,8 @@ from .key import keyToken
 
 import json
 import requests
-
-def studentData(id):
-    headers = {
-        'auth-token': keyToken(),}
-    response = requests.get('https://api.managebac.com/v2/students/'+id, headers=headers)
-    
-    # converts to python dict
-    return json.loads(response.content)
-
-def mbClasses():
-    headers = {
-        'auth-token': keyToken(),}
-    response = requests.get('https://api.managebac.com/v2/classes?archived=true', headers=headers)
-    
-    # converts to python dict
-    return json.loads(response.content)
-
-
-def academicYears():
-    headers = {
-    'auth-token': keyToken(),}
-    response = requests.get('https://api.managebac.com/v2/school/academic-years', headers=headers)
-
-    return json.loads(response.content)
-
-
-def studentClasses(id,archived):
-    if not archived:
-        archived = 'false'
-    headers = {
-    'auth-token': keyToken(),}
-    response = requests.get('https://api.managebac.com/v2/students/'+id+'/memberships?archived='+archived, headers=headers)
-
-    return json.loads(response.content)
-
-def allClasses(archived):
-    headers = {
-    'auth-token': keyToken(),}
-    response = requests.get('https://api.managebac.com/v2/classes?archived='+archived, headers=headers)
-
-    return json.loads(response.content)
-    
-
-def classTermGrades(classId,termId):
-    headers = {
-    'auth-token': keyToken(),}
-    response = requests.get('https://api.managebac.com/v2/classes/'+classId+'/assessments/term/'+termId+'/term-grades?include_archived_students=true', headers=headers)
-
-    return json.loads(response.content)
+#managebac API functions
+from .data import *
 
 
 def home(request):
@@ -101,7 +54,7 @@ def student(request):
 
         studentObject = studentData(id)["student"]
         studentStart = studentObject["created_at"]
-        
+        #eg student id 13618268
         archived_student_Classes = studentClasses(id,'true')["memberships"]["classes"]
         current_student_Classes = studentClasses(id,'false')["memberships"]["classes"]
         all_student_classes=archived_student_Classes+current_student_Classes
@@ -125,9 +78,10 @@ def student(request):
                                     i=0
                                     while classes['id'] != all_Classes[i]['id'] and i+1<len(all_Classes):
                                         i=i+1
+                                    print (str(i)+"class "+all_Classes[i]['subject_name'])
                                     transcriptData.append({'classData':all_Classes[i],'grade':student['term_grade']['grade']})
                         except:
-                            print("oops")
+                            print("oops "+str(i))
                     if hasGrade:
                         terms.append({'termID':term['id'], 'termName':term['name'], 'classGrades':transcriptData})
                         hasyearGrades = True
@@ -149,11 +103,11 @@ def student(request):
                                 if student['id'] == int(id) and student['term_grade']['grade']!=None:
                                     hasGrade = True
                                     i=0
-                                    while classes['id'] != all_Classes[i]['id']:
+                                    while classes['id'] != all_Classes[i]['id'] and i+1<len(all_Classes):
                                         i=i+1
                                     transcriptData.append({'classData':all_Classes[i],'grade':student['term_grade']['grade']})
                         except:
-                            print("oops")
+                            print("oops "+str(i))
                     if hasGrade:
                         terms.append({'termID':term['id'], 'termName':term['name'], 'classGrades':transcriptData})
                         hasyearGrades = True
