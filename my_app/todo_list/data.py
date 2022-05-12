@@ -81,9 +81,4 @@ def terms(programme):
 #returns array of student classes and their terms [{classid:34324,terms:[324,3423,23423]},...]
 def termsOfClasses(id):
 
-
-
-
-
-
-
+    pass
