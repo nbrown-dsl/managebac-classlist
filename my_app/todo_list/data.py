@@ -5,6 +5,8 @@ from .key import keyToken
 
 import json
 import requests
+#to use reload function
+import importlib
 
 def studentData(id):
     headers = {
@@ -29,6 +31,16 @@ def academicYears():
     response = requests.get('https://api.managebac.com/v2/school/academic-years', headers=headers)
 
     return json.loads(response.content)
+
+# class studentClasses(id):
+#     if not archived:
+#         archived = 'false'
+#     headers = {
+#     'auth-token': keyToken(),}
+#     response = requests.get('https://api.managebac.com/v2/students/'+id+'/memberships?archived='+archived, headers=headers)
+
+#     return json.loads(response.content)
+
 
 
 def studentClasses(id,archived):
@@ -57,15 +69,18 @@ def classTermGrades(classId,termId):
 
 #returns array of term ids in chronological order
 #to be used for returning terms that class runs for
-def terms():
+def terms(programme):
     termsofYears=[]
-    mypyearsData = academicYears()["academic_years"]["myp"]["academic_years"]
+    years = academicYears()["academic_years"][programme]["academic_years"]
 
-
-    for year in mypyearsData:
+    for year in years:
         for termsInYear in year["academic_terms"]:
-            print(type(termsInYear))
-            print(termsInYear)
+            termsofYears.append(termsInYear['id'])
+    print(termsofYears)
+
+#returns array of student classes and their terms [{classid:34324,terms:[324,3423,23423]},...]
+def termsOfClasses(id):
+
 
 
 
