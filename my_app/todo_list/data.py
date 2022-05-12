@@ -55,4 +55,20 @@ def classTermGrades(classId,termId):
 
     return json.loads(response.content)
 
+#returns array of term ids in chronological order
+#to be used for returning terms that class runs for
+def terms():
+    termsofYears=[]
+    mypyearsData = academicYears()["academic_years"]["myp"]["academic_years"]
+
+
+    for year in mypyearsData:
+        for termsInYear in year["academic_terms"]:
+            print(type(termsInYear))
+            print(termsInYear)
+
+
+
+
+
 
