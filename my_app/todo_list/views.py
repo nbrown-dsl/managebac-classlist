@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .models import List
 from django.contrib import messages
 from .key import keyToken
+from .doc_output import outputDoc
 
 import json
 import requests
@@ -140,37 +141,11 @@ def filterDone(request,state):
     filtered_items = List.objects.filter(completed=filterSwitch)
     return render(request,'home.html',{'all_items' : filtered_items})
 
-# def delete(request, list_id):
-#     item = List.objects.get(pk=list_id)
-#     item.delete()
-#     messages.success(request,('Item deleted'))
-#     return redirect('home')
+def genDoc(data):
 
-# def cross_off(request, list_id):
-#     item = List.objects.get(pk=list_id)
-#     item.completed = True
-#     item.save()
-#     return redirect('home')
+    outputDoc(data)
+    messages.success(request,('Transcript generated'))
+    return render(request,'student.html')
 
-# def uncross(request, list_id):
-#     item = List.objects.get(pk=list_id)
-#     item.completed = False
-#     item.save()
-#     return redirect('home')
 
-# def edit(request,list_id):
 
-#     if request.method == 'POST':
-#         item = List.objects.get(pk=list_id)
-
-#         form = ListForm(request.POST or None, instance=item)
-
-#         if form.is_valid():
-#             form.save()
-#             messages.success(request,('Item edited'))
-#             return redirect('home')
-
-#     else:
-
-#         item = List.objects.get(pk=list_id)
-#         return render(request,'edit.html',{'item' : item})
