@@ -54,10 +54,7 @@ def student(request):
 
         studentObject = studentData(id)["student"]
         studentStart = studentObject["created_at"]
-        #eg student id 13618268
-        archived_student_Classes = studentClasses(id,'true')["memberships"]["classes"]
-        current_student_Classes = studentClasses(id,'false')["memberships"]["classes"]
-        all_student_classes=archived_student_Classes+current_student_Classes
+        
         # termID = 168734
         mypyearsData = academicYears()["academic_years"]["myp"]["academic_years"]
         dpyearsData = academicYears()["academic_years"]["diploma"]["academic_years"]

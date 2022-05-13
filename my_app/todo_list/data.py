@@ -81,7 +81,7 @@ def terms(programme):
     return termsofYears
 
 #returns array of student classes and their terms [{classid:34324,terms:[324,3423,23423]},...]
-def termsOfClasses(id='13618268'):
+def termsOfClasses(id):
 
     toc = []
 
