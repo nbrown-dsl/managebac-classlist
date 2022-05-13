@@ -101,3 +101,77 @@ def termsOfClasses(id):
 
     return toc
 
+def studentTranscript(id, studentStart):
+        mypyears = []
+        dpyears = []
+        #returns array of class objects
+        all_archived_Classes=allClasses('true')["classes"]
+        all_active_Classes=allClasses('false')["classes"]
+        all_Classes=all_archived_Classes+all_active_Classes
+
+        
+        
+        # termID = 168734
+        mypyearsData = academicYears()["academic_years"]["myp"]["academic_years"]
+        dpyearsData = academicYears()["academic_years"]["diploma"]["academic_years"]
+        toc = termsOfClasses(id)
+
+        for year in mypyearsData:
+            hasyearGrades = False
+            terms = []
+            
+            if int(year["starts_on"][0:4]) >= int(studentStart[0:4]):
+                for term in year["academic_terms"]:               
+                    transcriptData = []
+                    hasGrade = False
+                    for t in toc:
+                        if term['id'] in t['termsIds']:
+                            classGrades = classTermGrades(str(t['classId']),str(term['id']))
+                            try:
+                                for student in classGrades["students"]:
+                                    if student['id'] == int(id) and student['term_grade']['grade']!=None:
+                                        hasGrade = True
+                                        i=0
+                                        while t['classId'] != all_Classes[i]['id'] and i+1<len(all_Classes):
+                                            i=i+1
+                                        print (str(i)+"class "+all_Classes[i]['subject_name'])
+                                        transcriptData.append({'classData':all_Classes[i],'grade':student['term_grade']['grade']})
+                            except:
+                                print("oops "+str(i))
+                    if hasGrade:
+                        terms.append({'termID':term['id'], 'termName':term['name'], 'classGrades':transcriptData})
+                        hasyearGrades = True
+                if hasyearGrades:
+                    mypyears.append({'yearName':year["name"],'terms':terms})
+        
+        for year in dpyearsData:
+            hasyearGrades = False
+            terms = []
+            #only checks in years since student joined
+            if int(year["starts_on"][0:4]) >= int(studentStart[0:4]):
+                for term in year["academic_terms"]:               
+                    transcriptData = []
+                    hasGrade = False
+                    for t in toc:
+                        if term['id'] in t['termsIds']:
+                            classGrades = classTermGrades(str(t['classId']),str(term['id']))
+                            try:
+                                for student in classGrades["students"]:
+                                    if student['id'] == int(id) and student['term_grade']['grade']!=None:
+                                        hasGrade = True
+                                        i=0
+                                        while t['classId'] != all_Classes[i]['id'] and i+1<len(all_Classes):
+                                            i=i+1
+                                        print (str(i)+"class "+all_Classes[i]['subject_name'])
+                                        transcriptData.append({'classData':all_Classes[i],'grade':student['term_grade']['grade']})
+                            except:
+                                print("oops "+str(i))
+                    if hasGrade:
+                        terms.append({'termID':term['id'], 'termName':term['name'], 'classGrades':transcriptData})
+                        hasyearGrades = True
+                if hasyearGrades:
+                    dpyears.append({'yearName':year["name"],'terms':terms})
+
+        years = [mypyears, dpyears] 
+
+        return years
