@@ -1,4 +1,49 @@
+from __future__ import print_function
 from docx import Document
+
+from mailmerge import MailMerge
+from datetime import date
+
+def mailmergeDoc(years,studentObject):
+    template_1 = "dwight-transcript.docx"
+    
+
+    # Show a simple example
+    document_1 = MailMerge(template_1)
+    print("Fields included in {}: {}".format(template_1,
+                                         document_1.get_merge_fields()))
+    # Merge in the values
+    student= {
+    'firstName' :studentObject['first_name'],
+    'secondName':studentObject['last_name'],
+    }
+
+
+    transcript = [{
+    'prod_desc': 'Red Shoes',
+    'price': '$10.00',
+    'quantity': '2500',
+    'total_purchases': '$25,000.00'
+    }, {
+    'prod_desc': 'Green Shirt',
+    'price': '$20.00',
+    'quantity': '10000',
+    'total_purchases': '$200,000.00'
+    }, {
+    'prod_desc': 'Purple belt',
+    'price': '$5.00',
+    'quantity': '5000',
+    'total_purchases': '$25,000.00'
+    }]
+
+    transcript = years[0][0]['terms'][0]['classGrades']
+
+    print (transcript)
+
+    document_3 = MailMerge(template_1)
+    document_3.merge(**student)
+    document_3.merge_rows('classData.subject_name', transcript)
+    document_3.write(studentObject['first_name']+' transcript.docx')
 
 def outputDoc(data):
 

@@ -2,7 +2,7 @@ from django.shortcuts import render
 from .models import List
 from django.contrib import messages
 from .key import keyToken
-from .doc_output import outputDoc
+from .doc_output import outputDoc, mailmergeDoc
 
 import json
 import requests
@@ -51,8 +51,11 @@ def student(request):
         studentStart = studentObject["created_at"]
 
         years = studentTranscript(id, studentStart)
+
+        # outputDoc(years)
+        mailmergeDoc(years,studentObject)
                    
-        messages.success(request,('Student Classes'))
+        messages.success(request,('Student Classes below and transcript doc generated'))
         return render(request,'student.html',{'years' : years,'student': studentObject})
     
     return render(request,'student.html')
@@ -74,11 +77,16 @@ def filterDone(request,state):
     filtered_items = List.objects.filter(completed=filterSwitch)
     return render(request,'home.html',{'all_items' : filtered_items})
 
-def genDoc(request):
+# def genDoc(request,id):
 
-    outputDoc(years)
-    messages.success(request,('Transcript generated'))
-    return render(request,'student.html')
+#     studentObject = studentData(id)["student"]
+#     studentStart = studentObject["created_at"]
+
+#     years = studentTranscript(id, studentStart)
+
+#     outputDoc(years)
+#     messages.success(request,('Transcript generated'))
+#     return render(request,'student.html')
 
 
 
