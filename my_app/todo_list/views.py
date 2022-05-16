@@ -2,7 +2,7 @@ from django.shortcuts import render
 from .models import List
 from django.contrib import messages
 from .key import keyToken
-from .doc_output import outputDoc, mailmergeDoc
+from .doc_output import mailmergeDoc
 
 import json
 import requests

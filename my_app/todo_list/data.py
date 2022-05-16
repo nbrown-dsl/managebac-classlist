@@ -85,8 +85,8 @@ def termsOfClasses(id):
 
     toc = []
 
-    archived_student_Classes = studentClasses(id,'true')["memberships"]["classes"]
-    current_student_Classes = studentClasses(id,'false')["memberships"]["classes"]
+    archived_student_Classes = studentClasses(str(id),'true')["memberships"]["classes"]
+    current_student_Classes = studentClasses(str(id),'false')["memberships"]["classes"]
     all_student_classes=archived_student_Classes+current_student_Classes
 
     termsIds = terms('myp')+terms('diploma')
@@ -135,7 +135,7 @@ def studentTranscript(id, studentStart):
                                         while t['classId'] != all_Classes[i]['id'] and i+1<len(all_Classes):
                                             i=i+1
                                         print (str(i)+"class "+all_Classes[i]['subject_name'])
-                                        transcriptData.append({'classData':all_Classes[i],'grade':student['term_grade']['grade']})
+                                        transcriptData.append({'subject_name':all_Classes[i]['subject_name'],'subject_group':all_Classes[i]['subject_group'], 'grade':str(student['term_grade']['grade'])})
                             except:
                                 print("oops "+str(i))
                     if hasGrade:
@@ -163,7 +163,7 @@ def studentTranscript(id, studentStart):
                                         while t['classId'] != all_Classes[i]['id'] and i+1<len(all_Classes):
                                             i=i+1
                                         print (str(i)+"class "+all_Classes[i]['subject_name'])
-                                        transcriptData.append({'classData':all_Classes[i],'grade':student['term_grade']['grade']})
+                                        transcriptData.append({'classData':all_Classes[i],'grade':str(student['term_grade']['grade'])})
                             except:
                                 print("oops "+str(i))
                     if hasGrade:
