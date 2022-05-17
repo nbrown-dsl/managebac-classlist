@@ -2,12 +2,12 @@ from django.shortcuts import render
 
 from django.contrib import messages
 
-from functions.doc_output import mailmergeDoc
-from functions.models import List
+from todo_list.functions.doc_output import mailmergeDoc
+from todo_list.functions.models import List
 import json
 import requests
 #managebac API functions
-from functions.data import *
+from todo_list.functions.data import *
 
 
 def home(request):
