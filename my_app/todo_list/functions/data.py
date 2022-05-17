@@ -1,7 +1,7 @@
 
 #data API calls to managebac
 
-import key
+from functions import key
 
 import json
 import requests

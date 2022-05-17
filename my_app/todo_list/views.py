@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from models import List
 from django.contrib import messages
-from key import keyToken
+from functions.key import keyToken
 from functions.doc_output import mailmergeDoc
 
 import json

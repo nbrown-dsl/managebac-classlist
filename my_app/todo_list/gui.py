@@ -3,13 +3,16 @@ from functions.doc_output import mailmergeDoc
 from functions.data import *
 
 
-def fahrenheit_to_celsius():
-    """Convert the value for Fahrenheit to Celsius and insert the
-    result into lbl_result.
+def genTranscript():
+    """gen transcript doc
     """
-    fahrenheit = ent_temperature.get()
-    celsius = (5 / 9) * (float(fahrenheit) - 32)
-    lbl_result["text"] = f"{round(celsius, 2)} \N{DEGREE CELSIUS}"
+    id = ent_temperature.get()
+    studentObject = studentData(id)["student"]
+    studentStart = studentObject["created_at"]
+    years = studentTranscript(id, studentStart)
+    mailmergeDoc(years,studentObject)
+
+    lbl_result["text"] = "doc generated"
 
 window = tk.Tk()
 window.title("Transcript generator")
@@ -25,7 +28,7 @@ lbl_temp.grid(row=0, column=1, sticky="w")
 btn_convert = tk.Button(
     master=window,
     text="\N{RIGHTWARDS BLACK ARROW}",
-    command=fahrenheit_to_celsius
+    command=genTranscript
 )
 lbl_result = tk.Label(master=window, text="doc")
 
