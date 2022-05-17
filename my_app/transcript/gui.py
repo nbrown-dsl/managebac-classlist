@@ -11,6 +11,7 @@ def genTranscript():
     studentStart = studentObject["created_at"]
     years = studentTranscript(id, studentStart)
     mailmergeDoc(years,studentObject)
+    
 
     lbl_result["text"] = "doc generated"
 
